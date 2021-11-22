@@ -33,8 +33,14 @@ set modeline
 set ruler
 set title
 set nu
+set number
+set encoding=UTF-8
 
+filetype plugin indent on
 set autoindent
+set tabstop=2
+set shiftwidth=2 expandtab
+set textwidth=140
 set mouse+=a
 
 " Make backspace a bit nicer
