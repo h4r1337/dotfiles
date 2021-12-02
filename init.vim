@@ -21,6 +21,9 @@ call plug#begin("~/.vim/plugged")
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
 
+  " Auto Pairs
+  Plug 'jiangmiao/auto-pairs'
+
 call plug#end()
 
 " filetype plugin on
