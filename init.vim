@@ -18,15 +18,30 @@ call plug#begin("~/.vim/plugged")
   Plug 'junegunn/fzf.vim'
 
   " Airline
-  Plug 'vim-airline/vim-airline'
+  Plug 'bling/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
 
   " Auto Pairs
   Plug 'jiangmiao/auto-pairs'
 
+  Plug 'tpope/vim-fugitive'
+
+  " Auto complete
+  if has('nvim')
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  else
+    Plug 'Shougo/deoplete.nvim'
+    Plug 'roxma/nvim-yarp'
+    Plug 'roxma/vim-hug-neovim-rpc'
+  endif
+  Plug 'deoplete-plugins/deoplete-jedi'
+  
+  " Nerd commenter
+  Plug 'scrooloose/nerdcommenter'
+
 call plug#end()
 
-" filetype plugin on
+filetype plugin on
 
 " Display
 set ls=2
@@ -36,7 +51,6 @@ set modeline
 set ruler
 set title
 set nu
-set number
 set encoding=UTF-8
 
 filetype plugin indent on
@@ -47,12 +61,16 @@ set textwidth=140
 set mouse+=a
 
 " Make backspace a bit nicer
-" set backspace=eol,start,indent
+set backspace=eol,start,indent
 
 " Line wrapping
 set nowrap
 set linebreak
-" set showbreak=▹
+set showbreak=▹
+
+" Auto complete settings
+autocmd FileType python let b:coc_suggest_disable = 1
+let g:deoplete#enable_at_startup = 1
 
 " Enable theming support
 if (has("termguicolors"))
@@ -67,10 +85,6 @@ colorscheme dracula
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_theme='powerlineish'
-let g:airline_section_b = airline#section#create(['branch', 'hunks'])
-
-" Fugitive
-let g:airline#extensions#fugitiveline#enabled = 1
 
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeMinimalUI = 1
@@ -117,3 +131,20 @@ function! OpenTerminal()
   resize 10
 endfunction
 nnoremap <c-n> :call OpenTerminal()<CR>
+
+" Move code block
+nnoremap K :m .-2<CR>==
+nnoremap J :m .+1<CR>==
+vnoremap K :m '<-2<CR>gv==gv
+vnoremap J :m '>+1<CR>gv==gv
+
+" Make number line bold
+function! MyHighlights() abort
+    hi LineNr ctermfg=60 ctermbg=242 cterm=NONE guifg=#6272a4 guibg=#282a36 gui=NONE
+endfunction
+
+augroup MyColors
+    autocmd!
+    autocmd ColorScheme * call MyHighlights()
+augroup END
+colorscheme dracula
