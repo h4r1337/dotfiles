@@ -1,6 +1,7 @@
 call plug#begin("~/.vim/plugged")
   " Theme
   Plug 'dracula/vim'
+  Plug 'tanvirtin/monokai.nvim'
 
   " Language Client
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -52,6 +53,7 @@ set ruler
 set title
 set nu
 set encoding=UTF-8
+set cursorline
 
 filetype plugin indent on
 set autoindent
@@ -60,6 +62,11 @@ set shiftwidth=2 expandtab
 set textwidth=140
 set mouse+=a
 
+if index(['python'], &filetype) != -1
+  let g:deoplete#enable_at_startup = 1
+  set shiftwidth=4 expandtab
+  set tabstop=4
+endif
 " Make backspace a bit nicer
 set backspace=eol,start,indent
 
@@ -70,7 +77,6 @@ set showbreak=▹
 
 " Auto complete settings
 autocmd FileType python let b:coc_suggest_disable = 1
-let g:deoplete#enable_at_startup = 1
 
 " Enable theming support
 if (has("termguicolors"))
@@ -78,8 +84,8 @@ if (has("termguicolors"))
 endif
 
 " Theme
-syntax enable
-colorscheme dracula
+syntax on
+colorscheme monokai
 
 " Airline
 let g:airline_powerline_fonts = 1
@@ -112,6 +118,9 @@ set splitbelow
 " turn terminal to normal mode with escape
 tnoremap <Esc> <C-\><C-n>
 
+" run current file
+nnoremap <leader>r :!%:p
+
 " use alt+hjkl to move between split/vsplit panels
 tnoremap <A-h> <C-\><C-n><C-w>h
 tnoremap <A-j> <C-\><C-n><C-w>j
@@ -138,13 +147,7 @@ nnoremap J :m .+1<CR>==
 vnoremap K :m '<-2<CR>gv==gv
 vnoremap J :m '>+1<CR>gv==gv
 
-" Make number line bold
-function! MyHighlights() abort
-    hi LineNr ctermfg=60 ctermbg=242 cterm=NONE guifg=#6272a4 guibg=#282a36 gui=NONE
-endfunction
-
 augroup MyColors
     autocmd!
     autocmd ColorScheme * call MyHighlights()
 augroup END
-colorscheme dracula
