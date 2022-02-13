@@ -147,7 +147,3 @@ nnoremap J :m .+1<CR>==
 vnoremap K :m '<-2<CR>gv==gv
 vnoremap J :m '>+1<CR>gv==gv
 
-augroup MyColors
-    autocmd!
-    autocmd ColorScheme * call MyHighlights()
-augroup END
