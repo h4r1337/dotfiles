@@ -1,97 +1,91 @@
-call plug#begin("~/.vim/plugged")
-  " Theme
-  Plug 'dracula/vim'
-  Plug 'tanvirtin/monokai.nvim'
+call plug#begin('~/.vim/plugged')
+	" Theme
+	Plug 'dracula/vim'
+	Plug 'tanvirtin/monokai.nvim'
 
-  " Language Client
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  let g:coc_global_extensions = ['coc-emmet', 'coc-css', 'coc-html', 'coc-json', 'coc-prettier', 'coc-tsserver']
-  " TypeScript Highlighting
-  Plug 'leafgarland/typescript-vim'
-  Plug 'peitalin/vim-jsx-typescript'
+	" Appearance
+	Plug 'vim-airline/vim-airline'
+	Plug 'ryanoasis/vim-devicons'
+	Plug 'vim-airline/vim-airline-themes'
+	Plug 'bling/vim-bufferline'
+	
+	" Utilities
+	Plug 'sheerun/vim-polyglot'
+	Plug 'jiangmiao/auto-pairs'
+	Plug 'ap/vim-css-color'
+	Plug 'preservim/nerdtree'
+	Plug 'preservim/nerdcommenter'
+	Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
+	Plug 'elzr/vim-json'
+	
+	" Completioni / linters / formatters
+	Plug 'plasticboy/vim-markdown'
+	Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-  " File Explorer with Icons
-  Plug 'scrooloose/nerdtree'
-  Plug 'ryanoasis/vim-devicons'
-
-  " File Search
-  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-  Plug 'junegunn/fzf.vim'
-
-  " Airline
-  Plug 'bling/vim-airline'
-  Plug 'vim-airline/vim-airline-themes'
-
-  " Auto Pairs
-  Plug 'jiangmiao/auto-pairs'
-
-  Plug 'tpope/vim-fugitive'
-
-  " Auto complete
-  if has('nvim')
-    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  else
-    Plug 'Shougo/deoplete.nvim'
-    Plug 'roxma/nvim-yarp'
-    Plug 'roxma/vim-hug-neovim-rpc'
-  endif
-  Plug 'deoplete-plugins/deoplete-jedi'
-  
-  " Nerd commenter
-  Plug 'scrooloose/nerdcommenter'
+	" Git
+	Plug 'tpope/vim-fugitive'
 
 call plug#end()
 
-filetype plugin on
-
-" Display
+" Options
+set background=dark
+set clipboard=unnamedplus
+set completeopt=noinsert,menuone,noselect
+set cursorline
+set hidden
+set inccommand=split
+set mouse+=a
+set number
+set splitbelow splitright
+set title
+set wildmenu
+set wildmode=longest,list
+set showmatch
+set ignorecase
+set autoindent
+set ttyfast
 set ls=2
 set showmode
 set showcmd
 set modeline
 set ruler
-set title
-set nu
 set encoding=UTF-8
-set cursorline
+
+" Tabs size
+set expandtab
+set shiftwidth=2
+set tabstop=2
+set expandtab
 
 filetype plugin indent on
-set autoindent
-set tabstop=2
-set shiftwidth=2 expandtab
-set textwidth=140
-set mouse+=a
+syntax on
+set t_Co=256
 
-if index(['python'], &filetype) != -1
-  let g:deoplete#enable_at_startup = 1
-  set shiftwidth=4 expandtab
-  set tabstop=4
+if $TERM !=? 'xterm-256color'
+	set termguicolors
 endif
+
+" Italics
+let &t_ZH="\e[3m"
+let &t_ZR="\e[23m"
+
 " Make backspace a bit nicer
 set backspace=eol,start,indent
 
-" Line wrapping
-set nowrap
-set linebreak
-set showbreak=▹
-
-" Auto complete settings
-autocmd FileType python let b:coc_suggest_disable = 1
-
-" Enable theming support
-if (has("termguicolors"))
- set termguicolors
-endif
-
-" Theme
-syntax on
 colorscheme monokai
 
+" Language server stuff
+command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
+
 " Airline
+let g:airline_theme='badwolf'
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme='powerlineish'
+let g:airline#extensions#branch#enabled = 1
 
+let b:coc_suggest_enable = 1
+
+" Nerd tree
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeMinimalUI = 1
 let g:NERDTreeIgnore = []
@@ -111,25 +105,51 @@ let g:fzf_action = {
 " used to ignore gitignore files
 let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 
-" open new split panes to right and below
-set splitright
-set splitbelow
+" Tabs
+nnoremap <S-Tab> gT
+nnoremap <Tab> gt
+nnoremap <silent> <S-t> :tabnew<CR>
 
-" turn terminal to normal mode with escape
-tnoremap <Esc> <C-\><C-n>
+" Disable math tex conceal feature
+let g:tex_conceal = ''
+let g:vim_markdown_math = 1
+
+" Markdown
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_frontmatter = 1
+let g:vim_markdown_conceal = 0
+let g:vim_markdown_fenced_languages = ['tsx=typescriptreact']
+
+
+" move line or visually selected block - alt+j/k
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
+
+" move split panes to left/bottom/top/right
+nnoremap <A-h> <C-W>H
+nnoremap <A-j> <C-W>J
+nnoremap <A-k> <C-W>K
+nnoremap <A-l> <C-W>L
+
+ " move between panes to left/bottom/top/right
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" Vim jump to the last position when reopening a file
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+    \| exe "normal! g'\"" | endif
+endif
 
 " run current file
 nnoremap <leader>r :!%:p
 
-" use alt+hjkl to move between split/vsplit panels
-tnoremap <A-h> <C-\><C-n><C-w>h
-tnoremap <A-j> <C-\><C-n><C-w>j
-tnoremap <A-k> <C-\><C-n><C-w>k
-tnoremap <A-l> <C-\><C-n><C-w>l
-nnoremap <A-h> <C-w>h
-nnoremap <A-j> <C-w>j
-nnoremap <A-k> <C-w>k
-nnoremap <A-l> <C-w>l
+" turn terminal to normal mode with escape
+tnoremap <Esc> <C-\><C-n>
 
 " start terminal in insert mode
 au BufEnter * if &buftype == 'terminal' | :startinsert | endif
@@ -140,10 +160,3 @@ function! OpenTerminal()
   resize 10
 endfunction
 nnoremap <c-n> :call OpenTerminal()<CR>
-
-" Move code block
-nnoremap K :m .-2<CR>==
-nnoremap J :m .+1<CR>==
-vnoremap K :m '<-2<CR>gv==gv
-vnoremap J :m '>+1<CR>gv==gv
-
