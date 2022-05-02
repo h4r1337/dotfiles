@@ -1,22 +1,29 @@
 {
-	"coc.preferences.formatOnSaveFiletypes": [
-		"javascript",
-		"typescript",
-		"typescriptreact",
-		"json",
-		"javascriptreact",
-		"typescript.tsx",
-		"html",
-		"css"
-	],
-	"eslint.filetypes": [
-		"javascript",
-		"typescript",
-		"typescriptreact",
-		"javascriptreact",
-		"typescript.tsx",
-		"html",
-		"css"
-	],
-	"coc.preferences.diagnostic.virtualText": true
+  "coc.preferences.formatOnSaveFiletypes": [
+    "css",
+    "sass",
+    "scss",
+    "markdown",
+    "html",
+    "json",
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "python"
+  ],
+  "python.formatting.provider": "black",
+  "python.formatting.blackPath": "~/.local/bin/black",
+  "prettier.singleQuote": true,
+  "javascript.autoClosingTags": true,
+  "typescript.autoClosingTags": true,
+  "emmet.includeLanguages": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "html"
+  ],
+  "codeLens.enable": false
 }
+
