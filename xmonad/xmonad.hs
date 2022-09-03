@@ -17,9 +17,8 @@ import XMonad.Hooks.EwmhDesktops ( ewmh )
 import Control.Monad ( join, when )
 import XMonad.Layout.NoBorders
 import XMonad.Hooks.ManageDocks
-    ( avoidStruts, docks, manageDocks, Direction2D(D, L, R, U) )
 import XMonad.Hooks.ManageHelpers ( doFullFloat, isFullscreen )
-import XMonad.Layout.Spacing ( spacingRaw, Border(Border) )
+import XMonad.Layout.Spacing
 import XMonad.Layout.Gaps
     ( Direction2D(D, L, R, U),
       gaps,
@@ -30,6 +29,7 @@ import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 import Data.Maybe (maybeToList)
 import XMonad.Actions.SpawnOn
+import XMonad.Util.NamedScratchpad
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
@@ -150,7 +150,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- GAPS!!!
     , ((modm .|. controlMask, xK_g), sendMessage $ ToggleGaps)               -- toggle all gaps
-    , ((modm .|. shiftMask, xK_g), sendMessage $ setGaps [(L,10), (R,10), (U,25), (D,10)]) -- reset the GapSpec
+    , ((modm .|. shiftMask, xK_g), sendMessage $ setGaps [(U,25)]) -- reset the GapSpec
     
     , ((modm .|. controlMask, xK_t), sendMessage $ IncGap 5 L)              -- increment the left-hand gap
     , ((modm .|. shiftMask, xK_t     ), sendMessage $ DecGap 5 L)           -- decrement the left-hand gap
@@ -223,6 +223,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- Run xmessage with a summary of the default keybindings (useful for beginners)
     , ((modm .|. shiftMask, xK_slash ), spawn ("echo \"" ++ help ++ "\" | xmessage -file -"))
+
+    -- Scratchpad
+    , ((modm .|. controlMask, xK_Return), namedScratchpadAction myScratchPads "terminal")
     ]
     ++
 
@@ -274,7 +277,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = avoidStruts(tiled ||| Mirror tiled ||| Full)
+myLayout = avoidStrutsOn [U] (tiled ||| Mirror tiled ||| Full)
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
@@ -356,6 +359,21 @@ myStartupHook = do
   spawnOnOnce "\62354" "discord"
   spawnOnOnce "\61884" "spotify"
 
+
+-- Scratch pad
+
+myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm]
+        
+      where
+      spawnTerm     = myTerminal ++ " -t scratchpad"
+      findTerm      = resource =? "scratchpad"
+      manageTerm    = customFloating $ W.RationalRect l t w h
+                      where
+                      h = 0.9
+                      w = 0.9
+                      t = 0.95 -h
+                      l = 0.95 -w
+
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
 
@@ -386,7 +404,7 @@ defaults = def {
 
       -- hooks, layouts
         manageHook = manageSpawn <+> myManageHook, 
-        layoutHook = gaps [(L,10), (R,10), (U,25), (D,10)] $ spacingRaw True (Border 10 10 10 10) True (Border 10 10 10 10) True $ smartBorders $ myLayout,
+        layoutHook = gaps [(U,25)] $ spacingRaw True (Border 2 2 2 2) True (Border 2 2 2 2) True $ smartBorders $ myLayout,
         handleEventHook    = myEventHook,
         logHook            = myLogHook,
         startupHook        = myStartupHook >> addEWMHFullscreen
