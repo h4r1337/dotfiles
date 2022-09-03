@@ -11,7 +11,7 @@ import XMonad.Layout.Fullscreen
     ( fullscreenEventHook, fullscreenManageHook, fullscreenSupport, fullscreenFull )
 import Data.Monoid ()
 import System.Exit ()
-import XMonad.Util.SpawnOnce ( spawnOnce )
+import XMonad.Util.SpawnOnce ( spawnOnce, spawnOnOnce )
 import Graphics.X11.ExtraTypes.XF86 (xF86XK_AudioLowerVolume, xF86XK_AudioRaiseVolume, xF86XK_AudioMute, xF86XK_MonBrightnessDown, xF86XK_MonBrightnessUp, xF86XK_AudioPlay, xF86XK_AudioPrev, xF86XK_AudioNext)
 import XMonad.Hooks.EwmhDesktops ( ewmh )
 import Control.Monad ( join, when )
@@ -130,8 +130,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((0,                    xF86XK_AudioMute), spawn "pactl set-sink-mute 0 toggle")
 
     -- Brightness keys
-    , ((0,                    xF86XK_MonBrightnessUp), spawn "brightnessctl s +10%")
-    , ((0,                    xF86XK_MonBrightnessDown), spawn "brightnessctl s 10-%")
+    , ((modm .|. mod1Mask,   xK_h), spawn "brightnessctl s +10%")
+    , ((modm .|. mod1Mask,   xK_j), spawn "brightnessctl s 10-%")
  
     -- Screenshot
     , ((0,                    xK_Print), maimcopy)
@@ -150,19 +150,19 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- GAPS!!!
     , ((modm .|. controlMask, xK_g), sendMessage $ ToggleGaps)               -- toggle all gaps
-    , ((modm .|. shiftMask, xK_g), sendMessage $ setGaps [(L,30), (R,30), (U,40), (D,60)]) -- reset the GapSpec
+    , ((modm .|. shiftMask, xK_g), sendMessage $ setGaps [(L,10), (R,10), (U,25), (D,10)]) -- reset the GapSpec
     
-    , ((modm .|. controlMask, xK_t), sendMessage $ IncGap 10 L)              -- increment the left-hand gap
-    , ((modm .|. shiftMask, xK_t     ), sendMessage $ DecGap 10 L)           -- decrement the left-hand gap
+    , ((modm .|. controlMask, xK_t), sendMessage $ IncGap 5 L)              -- increment the left-hand gap
+    , ((modm .|. shiftMask, xK_t     ), sendMessage $ DecGap 5 L)           -- decrement the left-hand gap
     
-    , ((modm .|. controlMask, xK_y), sendMessage $ IncGap 10 U)              -- increment the top gap
-    , ((modm .|. shiftMask, xK_y     ), sendMessage $ DecGap 10 U)           -- decrement the top gap
+    , ((modm .|. controlMask, xK_y), sendMessage $ IncGap 5 U)              -- increment the top gap
+    , ((modm .|. shiftMask, xK_y     ), sendMessage $ DecGap 5 U)           -- decrement the top gap
     
-    , ((modm .|. controlMask, xK_u), sendMessage $ IncGap 10 D)              -- increment the bottom gap
-    , ((modm .|. shiftMask, xK_u     ), sendMessage $ DecGap 10 D)           -- decrement the bottom gap
+    , ((modm .|. controlMask, xK_u), sendMessage $ IncGap 5 D)              -- increment the bottom gap
+    , ((modm .|. shiftMask, xK_u     ), sendMessage $ DecGap 5 D)           -- decrement the bottom gap
 
-    , ((modm .|. controlMask, xK_i), sendMessage $ IncGap 10 R)              -- increment the right-hand gap
-    , ((modm .|. shiftMask, xK_i     ), sendMessage $ DecGap 10 R)           -- decrement the right-hand gap
+    , ((modm .|. controlMask, xK_i), sendMessage $ IncGap 5 R)              -- increment the right-hand gap
+    , ((modm .|. shiftMask, xK_i     ), sendMessage $ DecGap 5 R)           -- decrement the right-hand gap
 
      -- Rotate through the available layout algorithms
     , ((modm,               xK_space ), sendMessage NextLayout)
@@ -309,6 +309,7 @@ myManageHook = fullscreenManageHook <+> manageDocks <+> composeAll
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore
     , isFullscreen --> doFullFloat
+    , className =? "discord"        --> doShift "\62354"
                                  ]
 
 ------------------------------------------------------------------------
@@ -339,6 +340,7 @@ myLogHook = return ()
 -- per-workspace layout choices.
 --
 -- By default, do nothing.
+myStartupHook :: X()
 myStartupHook = do
   spawnOnce "exec ~/bin/bartoggle"
   spawnOnce "exec ~/bin/eww daemon"
@@ -348,6 +350,11 @@ myStartupHook = do
   spawnOnce "picom --experimental-backends"
   spawnOnce "greenclip daemon"
   spawnOnce "dunst"
+  spawnOnce "exec ~/bin/touchsetup"
+  spawnOnOnce "\61820" myTerminal
+  spawnOnOnce "\62025" "obsidian"
+  spawnOnOnce "\62354" "discord"
+  spawnOnOnce "\61884" "spotify"
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
@@ -378,8 +385,8 @@ defaults = def {
         mouseBindings      = myMouseBindings,
 
       -- hooks, layouts
-        manageHook = myManageHook, 
-        layoutHook = gaps [(L,30), (R,30), (U,40), (D,60)] $ spacingRaw True (Border 10 10 10 10) True (Border 10 10 10 10) True $ smartBorders $ myLayout,
+        manageHook = manageSpawn <+> myManageHook, 
+        layoutHook = gaps [(L,10), (R,10), (U,25), (D,10)] $ spacingRaw True (Border 10 10 10 10) True (Border 10 10 10 10) True $ smartBorders $ myLayout,
         handleEventHook    = myEventHook,
         logHook            = myLogHook,
         startupHook        = myStartupHook >> addEWMHFullscreen

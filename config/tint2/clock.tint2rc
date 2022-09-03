@@ -86,9 +86,9 @@ border_color_pressed = #000000 100
 #-------------------------------------
 # Panel
 panel_items = C
-panel_size = 100 28
-panel_margin = 5 5
-panel_padding = 10 6 8
+panel_size = 100 20
+panel_margin = 0 0
+panel_padding = 10 3 8
 panel_background_id = 6
 wm_menu = 1
 panel_dock = 1
