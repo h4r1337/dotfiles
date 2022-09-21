@@ -12,7 +12,11 @@ local servers = {
   "jedi_language_server",
   "phpactor",
   "intelephense",
-  "rust_analyzer"
+  "rust_analyzer",
+  "rome",
+  "remark_ls",
+  "eslint",
+  "codeqlls",
 }
 
 for _, lsp in ipairs(servers) do

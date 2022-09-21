@@ -18,4 +18,17 @@ M.general = {
   }
 }
 
+M.vimspector = {
+  n = {
+    ["<F9>"] = { "<cmd>:call vimspector#Launch()<cr>", "Vimspector launch " },
+    ["<F8>"] = { "<cmd>:call vimspector#Reset()<cr>", "Vimspector reset" },
+    ["<F5>"] = { "<cmd>:call vimspector#StepOver()<cr>", "Vimspector stepover" },
+    ["<F4>"] = { "<cmd>:call vimspector#StepOut()<cr>", "Vimspector stepout" },
+    ["<F6>"] = { "<cmd>:call vimspector#StepInto()<cr>", "Vimspector stepinto" },
+    ["<leader>Db"] = { "<Plug>VimspectorToggleBreakpoint", "Vimspector toggle breakpoint" },
+    ["<leader>Dw"] = { "<cmd>:call vimspector#AddWatch()<cr>", "Vimspector add watch" },
+    ["<leader>De"] = { "<cmd>:call vimspector#Evaluate()<cr>", "Vimspector evaluate" },
+  }
+}
+
 return M

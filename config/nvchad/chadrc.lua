@@ -5,13 +5,12 @@ local M = {}
 M.mappings = require "custom.mappings"
 
 M.plugins = {
-  user = require("custom.plugins"),
+  user = require "custom.plugins",
 }
 
 M.ui = {
-  theme = "gruvbox",
-  theme_toggle = {"onedark", "gruvbox"},
+  theme = "gruvbox_material",
+  theme_toggle = { "onedark", "gruvbox" },
 }
-
 
 return M
