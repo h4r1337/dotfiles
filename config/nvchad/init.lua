@@ -46,5 +46,17 @@ let g:vimspector_terminal_maxwidth = 70
 ]])
 
 vim.cmd([[
-let g:vimspector_enable_mappings = 'HUMAN'
+let g:vimspector_enable_mappings = 'VISUAL_STUDIO'
+]])
+
+-- provider
+local enable_providers = {
+  "python3_provider",
+}
+for _, plugin in pairs(enable_providers) do
+  vim.g["loaded_" .. plugin] = nil
+  vim.cmd("runtime " .. plugin)
+end
+vim.cmd([[
+let g:python3_host_prog = '/usr/bin/python3'
 ]])

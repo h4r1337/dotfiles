@@ -38,16 +38,19 @@ return {
       require "custom.plugins.rust-tools"
     end,
   },
+  ["tpope/vim-surround"] = {
+    disable = false,
+  },
   ["hrsh7th/nvim-cmp"] = {
     override_options = function()
       return {
         sources = {
-          { name = "luasnip", keyword_length = 2 },
           { name = "nvim_lsp", keyword_length = 3 },
           { name = "buffer", keyword_length = 2 },
           { name = "nvim_lua", keyword_length = 2 },
           { name = "path" },
           { name = "nvim_lsp_signature_help" },
+          { name = "luasnip", keyword_length = 2 },
         },
       }
     end,
@@ -55,13 +58,12 @@ return {
   ["hrsh7th/cmp-nvim-lsp-signature-help"] = {
     disable = false,
   },
-  ["hrsh7th/cmp-vsnip"] = {
-    disable = false,
-  },
-  ["puremourning/vimspector"] = {
-    disable = false,
-  },
-  ["tpope/vim-surround"] = {
-    disable = false,
+  ["nvim-neorg/neorg"] = {
+    ft = "norg",
+    after = {"nvim-treesitter", "telescope"}, -- You may want to specify Telescope here as well
+    config = function()
+        require('neorg').setup {
+        }
+    end
   },
 }
