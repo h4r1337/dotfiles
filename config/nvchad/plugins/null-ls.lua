@@ -9,6 +9,7 @@ local sources = {
 
   -- webdev stuff
   b.formatting.prettierd,
+  b.formatting.prettier,
 
   -- markdown
   b.formatting.markdownlint,
@@ -16,6 +17,7 @@ local sources = {
   -- python
   b.formatting.black,
   b.formatting.autopep8,
+  b.formatting.autoflake,
 
   -- templates
   b.formatting.djlint,

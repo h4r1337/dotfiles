@@ -49,6 +49,12 @@ vim.cmd([[
 let g:vimspector_enable_mappings = 'VISUAL_STUDIO'
 ]])
 
+vim.cmd([[
+autocmd FileType python set sw=4
+autocmd FileType python set ts=4
+autocmd FileType python set sts=4
+]])
+
 -- provider
 local enable_providers = {
   "python3_provider",
@@ -59,4 +65,16 @@ for _, plugin in pairs(enable_providers) do
 end
 vim.cmd([[
 let g:python3_host_prog = '/usr/bin/python3'
+]])
+
+-- vim matching
+vim.cmd([[
+let g:vim_matchtag_enable_by_default = 1
+let g:vim_matchtag_files = '*.html,*.xml,*.js,*.jsx,*.ts,*.tsx,*.vue,*.svelte,*.jsp,*.php,*.erb'
+]])
+
+-- dart
+vim.cmd([[
+let g:dart_format_on_save = 1
+let g:dartfmt_options = ['--fix', '--line-length 120']
 ]])

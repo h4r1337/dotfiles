@@ -17,6 +17,10 @@ local servers = {
   "remark_ls",
   "eslint",
   "codeqlls",
+  "hls",
+  "ruby_ls",
+  "dartls",
+  "asm_lsp"
 }
 
 for _, lsp in ipairs(servers) do

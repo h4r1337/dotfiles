@@ -58,12 +58,16 @@ return {
   ["hrsh7th/cmp-nvim-lsp-signature-help"] = {
     disable = false,
   },
-  ["nvim-neorg/neorg"] = {
-    ft = "norg",
-    after = {"nvim-treesitter", "telescope"}, -- You may want to specify Telescope here as well
-    config = function()
-        require('neorg').setup {
-        }
-    end
+  ["leafOfTree/vim-matchtag"] = {
+    disable = false,
   },
+  ["NvChad/ui"] = {
+    override_options = {
+      tabufline = {
+        lazy = false,
+      },
+    },
+  },
+  {"dart-lang/dart-vim-plugin", disable = false, lazy = false},
+  {"natebosch/dartlang-snippets", disable = false, lazy = false},
 }

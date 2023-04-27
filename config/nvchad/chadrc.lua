@@ -9,7 +9,7 @@ M.plugins = {
 }
 
 M.ui = {
-  theme = "gruvbox_material",
+  theme = "gruvbox",
   theme_toggle = { "onedark", "gruvbox" },
 }
 
