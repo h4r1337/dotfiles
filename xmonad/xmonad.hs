@@ -30,6 +30,9 @@ import qualified Data.Map        as M
 import Data.Maybe (maybeToList)
 import XMonad.Actions.SpawnOn
 import XMonad.Util.NamedScratchpad
+import XMonad.Util.Run (runProcessWithInput)
+import XMonad.Prompt
+import XMonad.Prompt.Input
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
@@ -37,7 +40,7 @@ myTerminal      = "alacritty"
 
 -- Whether focus follows the mouse pointer.
 myFocusFollowsMouse :: Bool
-myFocusFollowsMouse = True
+myFocusFollowsMouse = False
 
 -- Whether clicking on a window to focus also passes the click to the window
 myClickJustFocuses :: Bool
@@ -96,9 +99,7 @@ clipboardy = spawn "rofi -modi \"\63053 :greenclip print\" -show \"\63053 \" -ru
 centerlaunch = spawn "exec ~/bin/eww --config ~/.config/eww/dashboard open-many profile system clock uptime music github reddit twitter youtube weather apps mail logout sleep reboot poweroff folders"
 sidebarlaunch = spawn "exec ~/bin/eww open-many weather_side time_side smol_calendar player_side sys_side sliders_side"
 ewwclose = spawn "pkill eww"
-maimcopy = spawn "maim -s | xclip -selection clipboard -t image/png && notify-send \"Screenshot\" \"Copied to Clipboard\" -i flameshot"
-maimsave = spawn "maim -s ~/Desktop/$(date +%Y-%m-%d_%H-%M-%S).png && notify-send \"Screenshot\" \"Saved to Desktop\" -i flameshot"
-rofi_launcher = spawn "rofi -no-lazy-grab -show drun -modi run,drun,window -theme $HOME/.config/rofi/launcher/style -drun-icon-theme \"candy-icons\" "
+-- rofi_launcher = spawn "rofi -no-lazy-grab -show drun -modi run,drun,window -theme $HOME/.config/rofi/launcher/style -drun-icon-theme \"candy-icons\" "
 
 
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
@@ -113,7 +114,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm,               xK_f     ), spawn "firefox")
 
     -- launch rofi and dashboard
-    , ((modm,               xK_o     ), rofi_launcher)
+    , ((modm,               xK_o     ), spawn "gmrun")
     , ((modm,               xK_p     ), centerlaunch)
     , ((modm .|. shiftMask, xK_p     ), ewwclose)
 
@@ -123,6 +124,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- bluetooth
     , ((modm .|. controlMask,xK_b    ), spawn "blueman-manager")
+
+    -- open hugo local development port
+    , ((modm .|. controlMask,xK_h    ), spawnPromptWithPort)
+
     -- Audio keys
     , ((0,                    xF86XK_AudioPlay), spawn "playerctl play-pause")
     , ((0,                    xF86XK_AudioPrev), spawn "playerctl previous")
@@ -132,12 +137,12 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((0,                    xF86XK_AudioMute), spawn "pactl set-sink-mute 0 toggle")
 
     -- Brightness keys
-    , ((modm .|. mod1Mask,   xK_h), spawn "brightnessctl s +10%")
+    , ((modm .|. mod1Mask,   xK_k), spawn "brightnessctl s +10%")
     , ((modm .|. mod1Mask,   xK_j), spawn "brightnessctl s 10-%")
  
     -- Screenshot
-    , ((0,                    xK_Print), maimcopy)
-    , ((modm,                 xK_Print), maimsave)
+    , ((0,                    xK_Print), spawn "flameshot gui")
+    , ((modm,                 xK_Print), spawn "flameshot gui")
 
     -- My Stuff
     , ((modm,               xK_b     ), spawn "exec ~/bin/bartoggle")
@@ -249,6 +254,16 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
 
+-----------------------------------------------------------------------
+-- Spawn a prompt for a port number
+-- used to open local development server inside a browser
+--
+spawnPromptWithPort = do
+  port <- inputPrompt defaultXPConfig "Enter port number: "
+  case port of
+    Just p -> spawn $ "xdg-open http://127.0.0.1:" ++ p
+    Nothing -> return ()
+
 ------------------------------------------------------------------------
 -- Mouse bindings: default actions bound to mouse events
 --
@@ -311,6 +326,8 @@ myLayout = avoidStrutsOn [U] (tiled ||| Mirror tiled ||| Full)
 myManageHook = fullscreenManageHook <+> manageDocks <+> composeAll
     [ className =? "MPlayer"        --> doFloat
     , className =? "Gimp"           --> doFloat
+    , className =? "burp"           --> doFloat
+    , className =? "Android Emulator - Pixel_6_Pro_API_30:5554" --> doFloat
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore
     , isFullscreen --> doFullFloat
@@ -352,7 +369,6 @@ myStartupHook = do
   spawn "xsetroot -cursor_name left_ptr"
   spawn "exec ~/bin/lock.sh"
   spawnOnce "feh --bg-scale ~/Pictures/Wallpapers/finalizer.png"
-  spawnOnce "picom --experimental-backends"
   spawnOnce "greenclip daemon"
   spawnOnce "dunst"
   spawnOnce "exec ~/bin/touchsetup"
