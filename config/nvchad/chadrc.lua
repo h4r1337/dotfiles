@@ -1,16 +1,20 @@
--- Just an example, supposed to be placed in /lua/custom/
-
+---@type ChadrcConfig
 local M = {}
 
-M.mappings = require "custom.mappings"
-
-M.plugins = {
-  user = require "custom.plugins",
-}
+-- Path to overriding theme and highlights files
+local highlights = require "custom.highlights"
 
 M.ui = {
   theme = "gruvbox",
-  theme_toggle = { "onedark", "gruvbox" },
+  theme_toggle = { "gruvbox", "gruvchad" },
+
+  hl_override = highlights.override,
+  hl_add = highlights.add,
 }
+
+M.plugins = "custom.plugins"
+
+-- check core.mappings for table structure
+M.mappings = require "custom.mappings"
 
 return M

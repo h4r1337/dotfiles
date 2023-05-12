@@ -1,3 +1,10 @@
+local autocmd = vim.api.nvim_create_autocmd
+
+-- Auto resize panes when resizing nvim window
+autocmd("VimResized", {
+  pattern = "*",
+  command = "tabdo wincmd =",
+})
 local sign = function (opts)
   vim.fn.sign_define(opts.name, {
     texthl = opts.name,
@@ -78,3 +85,4 @@ vim.cmd([[
 let g:dart_format_on_save = 1
 let g:dartfmt_options = ['--fix', '--line-length 120']
 ]])
+
