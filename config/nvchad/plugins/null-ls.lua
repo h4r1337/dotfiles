@@ -30,6 +30,9 @@ local sources = {
 
   -- C/C++
   b.formatting.clang_format,
+
+  b.formatting.markdown_toc,
+  b.formatting.docformatter,
 }
 
 null_ls.setup {
